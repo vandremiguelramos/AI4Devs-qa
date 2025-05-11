@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "fullName": "João Silva",
+    "currentInterviewStep": "Initial Screening",
+    "averageScore": 4.2,
+    "applicationId": 101
+  },
+  {
+    "id": 2,
+    "fullName": "Maria Oliveira",
+    "currentInterviewStep": "Initial Screening",
+    "averageScore": 3.5,
+    "applicationId": 102
+  },
+  {
+    "id": 3,
+    "fullName": "Carlos Santos",
+    "currentInterviewStep": "Technical Interview",
+    "averageScore": 4.8,
+    "applicationId": 103
+  },
+  {
+    "id": 4,
+    "fullName": "Ana Costa",
+    "currentInterviewStep": "Technical Interview",
+    "averageScore": 3.2,
+    "applicationId": 104
+  },
+  {
+    "id": 5,
+    "fullName": "Pedro Martins",
+    "currentInterviewStep": "Manager Interview",
+    "averageScore": 4.0,
+    "applicationId": 105
+  },
+  {
+    "id": 6,
+    "fullName": "Julia Ferreira",
+    "currentInterviewStep": "Manager Interview",
+    "averageScore": 4.5,
+    "applicationId": 106
+  }
+] 

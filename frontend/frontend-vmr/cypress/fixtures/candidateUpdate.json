@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "message": "Candidate stage updated successfully",
+  "data": {
+    "id": 1,
+    "fullName": "João Silva",
+    "currentInterviewStep": "Technical Interview",
+    "averageScore": 4.2,
+    "applicationId": 101
+  }
+} 

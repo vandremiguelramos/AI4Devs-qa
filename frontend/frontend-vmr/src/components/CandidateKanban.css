@@ -1,0 +1,634 @@
+/* Estilo para o corpo durante o arrasto */
+body.dragging-active {
+  cursor: grabbing !important;
+  background-color: #f8f9fa;
+}
+
+body.dragging-active * {
+  cursor: grabbing !important;
+}
+
+/* Restante dos estilos */
+.kanban-board {
+  min-height: 600px;
+  padding: 10px 0;
+  overflow-x: auto;
+}
+
+.kanban-column {
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  min-height: 500px;
+  transition: all 0.3s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  background-image: linear-gradient(to bottom, #ffffff, #f8f9fa);
+}
+
+.kanban-column:hover {
+  background-color: #f1f3f5;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.candidate-card {
+  cursor: grab;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-left: 5px solid #007bff;
+  user-select: none;
+  margin-bottom: 15px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.09);
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.candidate-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 100%);
+  pointer-events: none;
+}
+
+.candidate-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px);
+}
+
+.candidate-card:active {
+  cursor: grabbing;
+  opacity: 0.8;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  transform: scale(0.98);
+}
+
+/* Estilos para diferentes níveis de score */
+.candidate-card.high-score {
+  border-left-color: #28a745;
+  background: linear-gradient(to right, rgba(40, 167, 69, 0.08), white 15%);
+}
+
+.candidate-card.medium-score {
+  border-left-color: #ffc107;
+  background: linear-gradient(to right, rgba(255, 193, 7, 0.08), white 15%);
+}
+
+.candidate-card.low-score {
+  border-left-color: #dc3545;
+  background: linear-gradient(to right, rgba(220, 53, 69, 0.08), white 15%);
+}
+
+/* Estilo para indicar uma coluna que pode receber o candidato */
+.kanban-column.drag-over {
+  background-color: #e8f4f8;
+  background-image: linear-gradient(to bottom, #e3f2fd, #e8f4f8);
+  box-shadow: inset 0 0 0 2px #007bff, 0 6px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Novos estilos para melhorar feedback visual */
+.drag-handle {
+  cursor: grab;
+  position: relative;
+}
+
+.drag-handle::after {
+  content: '☰';
+  position: absolute;
+  right: 5px;
+  top: 0;
+  font-size: 0.8rem;
+  color: #adb5bd;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.candidate-card:hover .drag-handle::after {
+  opacity: 1;
+}
+
+.candidate-card.dragging {
+  opacity: 0.9;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+  transform: scale(1.03) rotate(1deg);
+  border-left: 5px solid #28a745;
+  z-index: 100;
+  background-color: #f8f9fa;
+}
+
+.kanban-column.drag-over .card {
+  pointer-events: none;
+}
+
+/* Destacar coluna alvo */
+.kanban-column.drag-over::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 123, 255, 0.1);
+  border-radius: 12px;
+  pointer-events: none;
+  z-index: 1;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.4);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(0, 123, 255, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(0, 123, 255, 0);
+  }
+}
+
+/* Área vazia na coluna para soltar o cartão */
+.empty-column-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 120px;
+  border: 2px dashed #dee2e6;
+  border-radius: 8px;
+  color: #6c757d;
+  margin-bottom: 15px;
+  transition: all 0.3s ease;
+  background-color: rgba(222, 226, 230, 0.1);
+}
+
+.empty-column-message:hover {
+  border-color: #adb5bd;
+  background-color: rgba(222, 226, 230, 0.3);
+}
+
+.kanban-column-header {
+  padding: 12px 15px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  background: linear-gradient(to bottom, #ffffff, #f9f9f9);
+  margin-bottom: 15px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.candidate-card .card-body {
+  padding: 15px;
+}
+
+.candidate-card .card-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #343a40;
+}
+
+.badge {
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+}
+
+.badge:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+/* Badges no cabeçalho */
+.fs-5 .badge {
+  font-size: 0.85rem;
+  padding: 8px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Animação suave para atualização de estado */
+.candidate-card {
+  animation: slide-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para a barra de progresso na parte superior */
+.kanban-progress {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  margin-bottom: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.kanban-progress-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #007bff, #6610f2);
+  transition: width 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+
+.kanban-progress::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.2) 0%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    rgba(255, 255, 255, 0.2) 100%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+  pointer-events: none;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Estilos para o contador de candidatos */
+.candidate-counter {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  color: #495057;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  margin-left: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.candidate-counter:hover {
+  transform: scale(1.1) rotate(5deg);
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+/* Estilo para o indicador de score com emoji */
+.score-indicator {
+  float: right;
+  font-size: 1.2rem;
+  margin-left: 8px;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.2));
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+.candidate-card:hover .score-indicator {
+  transform: translateY(-2px) scale(1.2);
+}
+
+/* Estilo para a barra de score na parte inferior do cartão */
+.score-bar {
+  height: 4px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  transition: width 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  z-index: 3;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Melhorias visuais para o botão de detalhes */
+.details-btn {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.details-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.25);
+}
+
+.details-btn::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.3) 50%, 
+    rgba(255, 255, 255, 0) 100%);
+  transition: all 0.5s ease;
+}
+
+.details-btn:hover::after {
+  left: 100%;
+}
+
+/* Estilos para a distribuição de candidatos por etapa */
+.stage-distribution {
+  display: flex;
+  width: 100%;
+  height: 24px;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f1f3f5;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.stage-bar {
+  height: 100%;
+  transition: all 0.5s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 0.8rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+}
+
+.stage-bar::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    rgba(255, 255, 255, 0.1) 0%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(255, 255, 255, 0.1) 100%);
+  pointer-events: none;
+}
+
+.stage-bar:hover {
+  filter: brightness(1.1);
+}
+
+.stage-bar span {
+  z-index: 2;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+/* Estilos para o botão de retorno */
+.back-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  color: #007bff;
+  font-size: 1.2rem;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 123, 255, 0.2);
+  text-decoration: none;
+}
+
+.back-arrow:hover {
+  transform: translateX(-5px);
+  background-color: #007bff;
+  color: white;
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.back-arrow:active {
+  transform: scale(0.95);
+}
+
+/* Estilos para a legenda de cores das etapas */
+.stage-colors-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.stage-color-item {
+  display: flex;
+  align-items: center;
+  margin: 0 5px;
+  padding: 2px 8px;
+  background-color: white;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.color-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-right: 5px;
+  display: inline-block;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.stage-name {
+  color: #495057;
+  font-weight: 500;
+}
+
+/* Estilos para a legenda dos ícones */
+.icons-legend {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  padding: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  margin: 0 10px;
+  padding: 5px 10px;
+  background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.legend-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.legend-icon {
+  margin-right: 6px;
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.high-score-icon {
+  color: #28a745;
+  filter: drop-shadow(0 1px 2px rgba(40, 167, 69, 0.4));
+}
+
+.medium-score-icon {
+  color: #ffc107;
+  filter: drop-shadow(0 1px 2px rgba(255, 193, 7, 0.4));
+}
+
+.low-score-icon {
+  color: #dc3545;
+  filter: drop-shadow(0 1px 2px rgba(220, 53, 69, 0.4));
+}
+
+.legend-text {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+/* Estilos para a legenda de cores de borda dos cartões */
+.card-border-legend {
+  display: flex;
+  justify-content: center;
+}
+
+.border-legend-item {
+  display: flex;
+  align-items: center;
+  margin: 0 5px;
+  padding: 4px 12px;
+  background-color: white;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  position: relative;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.border-legend-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.border-legend-text {
+  color: #495057;
+  font-weight: 500;
+}
+
+.high-score-border {
+  border-left: 5px solid #28a745;
+}
+
+.medium-score-border {
+  border-left: 5px solid #ffc107;
+}
+
+.low-score-border {
+  border-left: 5px solid #dc3545;
+}
+
+.default-score-border {
+  border-left: 5px solid #007bff;
+}
+
+/* Estilos para o botão de legenda e popover */
+.legend-btn {
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  margin-left: 10px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.legend-btn:hover {
+  background-color: #f8f9fa;
+  transform: translateY(-2px);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
+
+.legends-popover {
+  max-width: 360px;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+.legends-popover .popover-header {
+  background: linear-gradient(135deg, #6610f2, #007bff);
+  color: white;
+  font-weight: 600;
+  border: none;
+  padding: 10px 15px;
+}
+
+.legends-popover .popover-body {
+  padding: 15px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.legend-section {
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.legend-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.legend-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 8px;
+}
+
+.legend-tips {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 0.85rem;
+  color: #6c757d;
+}
+
+.legend-tips li {
+  margin-bottom: 5px;
+}
+
+.legend-tips li:last-child {
+  margin-bottom: 0;
+} 
